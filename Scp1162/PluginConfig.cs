@@ -13,6 +13,9 @@ namespace Scp1162
         [Description("The size of Scp1162")]
         public float Size = 3f;
 
+        [Description("If Enabled the new Items will be dropped")]
+        public bool Drop = false;
+
         [Description("The Items which can Scp1162 gives the Player (use the id -1 for a zombie ragdoll)")]
         public List<SerializedItem> PossibleItems = new List<SerializedItem>
         {

@@ -38,7 +38,10 @@ namespace Scp1162
                     return;
                 }
                 var item = serializeditem.Parse();
-                item.PickUp(ev.Player);
+                if (PluginClass.Config.Drop)
+                    item.Drop(ev.Player.Position);
+                else
+                    item.PickUp(ev.Player);
             }
         }
 
