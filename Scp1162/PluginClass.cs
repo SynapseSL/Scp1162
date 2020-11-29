@@ -17,9 +17,6 @@ namespace Scp1162
         [Config(section = "Scp1162")]
         public static PluginConfig Config;
 
-        public override void Load()
-        {
-            new EventHandlers();
-        }
+        public override void Load() => new EventHandlers();
     }
 }
