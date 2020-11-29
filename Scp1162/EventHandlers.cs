@@ -26,8 +26,8 @@ namespace Scp1162
         {
             if(Vector3.Distance(ev.Player.Position,scp1162Position) <= PluginClass.Config.Size)
             {
-                ev.Allow = false;
                 if (PluginClass.Config.PossibleItems == null || PluginClass.Config.PossibleItems.Count == 0) return;
+                ev.Allow = false;
                 ev.Item.Destroy();
                 ev.Player.GiveTextHint("You have changed your Item in <color=blue>Scp-1162");
 
