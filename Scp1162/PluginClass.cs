@@ -6,11 +6,11 @@ namespace Scp1162
         Name = "Scp1162",
         Author = "Dimenzio",
         Description = "Adds Scp1162 (the hole) to the Game",
-        LoadPriority = int.MinValue,
+        LoadPriority = 0,
         SynapseMajor = 2,
-        SynapseMinor = 2,
+        SynapseMinor = 7,
         SynapsePatch = 0,
-        Version = "v.1.0.0"
+        Version = "v.1.0.1"
         )]
     public class PluginClass : AbstractPlugin
     {

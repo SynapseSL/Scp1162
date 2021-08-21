@@ -1,9 +1,6 @@
-﻿using Ev = Synapse.Api.Events.EventHandler;
-using Synapse;
-using Synapse.Api;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
-using Mirror;
+using Ev = Synapse.Api.Events.EventHandler;
 
 namespace Scp1162
 {
@@ -16,7 +13,7 @@ namespace Scp1162
             Ev.Get.Player.PlayerJoinEvent += Join;
         }
 
-        private void Join(Synapse.Api.Events.SynapseEventArguments.PlayerJoinEventArgs ev) => PlaceScp1162(ev.Player);
+        private void Join(Synapse.Api.Events.SynapseEventArguments.PlayerJoinEventArgs ev) => ev.Player.PlaceBlood(scp1162Position, 1, PluginClass.Config.Size);
 
         private void Wait() => scp1162Position = PluginClass.Config.Scp1162Location.Parse().Position;
 
@@ -29,12 +26,12 @@ namespace Scp1162
                 if (PluginClass.Config.PossibleItems == null || PluginClass.Config.PossibleItems.Count == 0) return;
                 ev.Allow = false;
                 ev.Item.Destroy();
-                ev.Player.GiveTextHint("You have changed your Item in <color=blue>Scp-1162");
+                ev.Player.GiveTextHint(PluginClass.Config.Message);
 
                 var serializeditem = PluginClass.Config.PossibleItems.ElementAt(UnityEngine.Random.Range(0, PluginClass.Config.PossibleItems.Count));
                 if(serializeditem.ID == -1)
                 {
-                    Map.Get.CreateRagdoll(RoleType.Scp0492, ev.Player.Position, ev.Player.transform.rotation,Vector3.zero, default, false, ev.Player);
+                    new Synapse.Api.Ragdoll(RoleType.Scp0492, ev.Player.Position, ev.Player.transform.rotation, Vector3.zero, default, false, ev.Player);
                     return;
                 }
                 var item = serializeditem.Parse();
@@ -43,24 +40,6 @@ namespace Scp1162
                 else
                     item.PickUp(ev.Player);
             }
-        }
-
-        private void PlaceScp1162(Player player)
-        {
-            var component = Server.Get.Host.ClassManager;
-            var writer = NetworkWriterPool.GetWriter();
-            writer.WriteVector3(scp1162Position);
-            writer.WritePackedInt32(1);
-            writer.WriteSingle(PluginClass.Config.Size);
-            var msg = new RpcMessage
-            {
-                netId = component.netId,
-                componentIndex = component.ComponentIndex,
-                functionHash = typeof(CharacterClassManager).FullName.GetStableHashCode() * 503 + "RpcPlaceBlood".GetStableHashCode(),
-                payload = writer.ToArraySegment()
-            };
-            player.Connection.Send(msg);
-            NetworkWriterPool.Recycle(writer);
         }
     }
 }
