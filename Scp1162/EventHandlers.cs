@@ -18,7 +18,7 @@ namespace Scp1162
         {
             var point = PluginClass.Config.Scp1162Location.Parse();
             scp1162Position = point.Position;
-            var scp1162 = ShematicHandler.Get.SpawnShematic(PluginClass.Config.ShematicID, scp1162Position);
+            var scp1162 = SchematicHandler.Get.SpawnSchematic(PluginClass.Config.ShematicID, scp1162Position);
             scp1162.Rotation = point.Room.GameObject.transform.rotation;
         }
 
