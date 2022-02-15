@@ -8,9 +8,9 @@ namespace Scp1162
         Description = "Adds Scp1162 (the hole) to the Game",
         LoadPriority = 0,
         SynapseMajor = 2,
-        SynapseMinor = 7,
+        SynapseMinor = 9,
         SynapsePatch = 0,
-        Version = "v.1.0.1"
+        Version = "v.1.1.0"
         )]
     public class PluginClass : AbstractPlugin
     {

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Synapse.Api.CustomObjects;
+using Synapse.Api.Enum;
+using System.Linq;
 using UnityEngine;
 using Ev = Synapse.Api.Events.EventHandler;
 
@@ -10,18 +12,21 @@ namespace Scp1162
         {
             Ev.Get.Player.PlayerDropItemEvent += Drop;
             Ev.Get.Round.WaitingForPlayersEvent += Wait;
-            Ev.Get.Player.PlayerJoinEvent += Join;
         }
 
-        private void Join(Synapse.Api.Events.SynapseEventArguments.PlayerJoinEventArgs ev) => ev.Player.PlaceBlood(scp1162Position, 1, PluginClass.Config.Size);
-
-        private void Wait() => scp1162Position = PluginClass.Config.Scp1162Location.Parse().Position;
+        private void Wait()
+        {
+            var point = PluginClass.Config.Scp1162Location.Parse();
+            scp1162Position = point.Position;
+            var scp1162 = ShematicHandler.Get.SpawnShematic(PluginClass.Config.ShematicID, scp1162Position);
+            scp1162.Rotation = point.Room.GameObject.transform.rotation;
+        }
 
         private Vector3 scp1162Position;
 
         private void Drop(Synapse.Api.Events.SynapseEventArguments.PlayerDropItemEventArgs ev)
         {
-            if(Vector3.Distance(ev.Player.Position,scp1162Position) <= PluginClass.Config.Size)
+            if(Vector3.Distance(ev.Player.Position,scp1162Position) <= 3)
             {
                 if (PluginClass.Config.PossibleItems == null || PluginClass.Config.PossibleItems.Count == 0) return;
                 ev.Allow = false;
@@ -31,9 +36,10 @@ namespace Scp1162
                 var serializeditem = PluginClass.Config.PossibleItems.ElementAt(UnityEngine.Random.Range(0, PluginClass.Config.PossibleItems.Count));
                 if(serializeditem.ID == -1)
                 {
-                    new Synapse.Api.Ragdoll(RoleType.Scp0492, ev.Player.Position, ev.Player.transform.rotation, Vector3.zero, default, false, ev.Player);
+                    new Synapse.Api.Ragdoll(RoleType.Scp0492, "SCP-1162", ev.Player.Position, ev.Player.transform.rotation, DamageType.Unknown);
                     return;
                 }
+
                 var item = serializeditem.Parse();
                 if (PluginClass.Config.Drop)
                     item.Drop(ev.Player.Position);

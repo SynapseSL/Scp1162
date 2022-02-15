@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using Synapse.Config;
+using System.Collections.Generic;
 using System.ComponentModel;
-using Synapse.Config;
 using UnityEngine;
 
 namespace Scp1162
 {
     public class PluginConfig : AbstractConfigSection
     {
-        [Description("The Position of Scp1162")]
-        public SerializedMapPoint Scp1162Location { get; set; } = new SerializedMapPoint("LCZ_173", 23.91992f, 15.83f, 11.24058f);
+        public bool SpawnShematic { get; set; } = true;
 
-        [Description("The size of Scp1162")]
-        public float Size { get; set; } = 3f;
+        [Description("The Shematic that should be spawned")]
+        public int ShematicID { get; set; } = 1162;
+
+        [Description("The Position of Scp1162")]
+        public SerializedMapPoint Scp1162Location { get; set; } = new SerializedMapPoint("LCZ_173", 22.5f, 18.1f, 5f);
 
         [Description("If Enabled the new Items will be dropped")]
         public bool Drop { get; set; } = false;
