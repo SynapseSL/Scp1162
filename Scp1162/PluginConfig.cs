@@ -15,6 +15,9 @@ namespace Scp1162
         [Description("The Position of Scp1162")]
         public SerializedMapPoint Scp1162Location { get; set; } = new SerializedMapPoint("LCZ_173", 22.5f, 18.1f, 5f);
 
+        [Description("The Range of SCP-1162 in which it is active")]
+        public float Size { get; set; } = 3f;
+
         [Description("If Enabled the new Items will be dropped")]
         public bool Drop { get; set; } = false;
 

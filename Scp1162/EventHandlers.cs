@@ -26,7 +26,7 @@ namespace Scp1162
 
         private void Drop(Synapse.Api.Events.SynapseEventArguments.PlayerDropItemEventArgs ev)
         {
-            if(Vector3.Distance(ev.Player.Position,scp1162Position) <= 3)
+            if(Vector3.Distance(ev.Player.Position,scp1162Position) <= PluginClass.Config.Size)
             {
                 if (PluginClass.Config.PossibleItems == null || PluginClass.Config.PossibleItems.Count == 0) return;
                 ev.Allow = false;
