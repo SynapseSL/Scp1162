@@ -10,7 +10,7 @@ namespace Scp1162
         public bool SpawnShematic { get; set; } = true;
 
         [Description("The Shematic that should be spawned")]
-        public int ShematicID { get; set; } = 1162;
+        public int SchematicID { get; set; } = 1162;
 
         [Description("The Position of Scp1162")]
         public SerializedMapPoint Scp1162Location { get; set; } = new SerializedMapPoint("LCZ_173", 22.5f, 18.1f, 5f);

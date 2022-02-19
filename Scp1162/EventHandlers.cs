@@ -12,13 +12,31 @@ namespace Scp1162
         {
             Ev.Get.Player.PlayerDropItemEvent += Drop;
             Ev.Get.Round.WaitingForPlayersEvent += Wait;
+
+            if (!SchematicHandler.Get.IsIDRegistered(PluginClass.Config.SchematicID))
+                SchematicHandler.Get.SaveSchematic(new SynapseSchematic
+                {
+                    Name = "SCP-1162",
+                    ID = 1162,
+                    PrimitiveObjects = new System.Collections.Generic.List<SynapseSchematic.PrimitiveConfiguration>
+                    {
+                        new SynapseSchematic.PrimitiveConfiguration
+                        {
+                            Position = Vector3.zero,
+                            Rotation = new Vector3(90f,0f,0f),
+                            Color = new Color(0.1f,.01f,0.1f,0.95f),
+                            PrimitiveType = PrimitiveType.Cylinder,
+                            Scale = new Vector3(1.3f,0.1f,1.3f)
+                        }
+                    }
+                }, "SCP-1162");
         }
 
         private void Wait()
         {
             var point = PluginClass.Config.Scp1162Location.Parse();
             scp1162Position = point.Position;
-            var scp1162 = SchematicHandler.Get.SpawnSchematic(PluginClass.Config.ShematicID, scp1162Position);
+            var scp1162 = SchematicHandler.Get.SpawnSchematic(PluginClass.Config.SchematicID, scp1162Position);
             scp1162.Rotation = point.Room.GameObject.transform.rotation;
         }
 
