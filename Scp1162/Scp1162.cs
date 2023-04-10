@@ -10,7 +10,7 @@ namespace Scp1162;
     Author = "Dimenzio",
     Name = "SCP-1162",
     Description = "Adds SCP-1162 to the game",
-    Version = "1.0.0"
+    Version = "3.0.0"
     )]
 public class Scp1162 : ReloadablePlugin<Config,Translation>
 {
