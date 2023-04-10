@@ -1,69 +1,57 @@
-﻿using Synapse.Api.CustomObjects;
-using Synapse.Api.Enum;
-using System.Linq;
+﻿using Neuron.Core.Events;
+using Neuron.Core.Meta;
+using Ninject;
+using PlayerRoles;
+using Synapse3.SynapseModule.Enums;
+using Synapse3.SynapseModule.Events;
+using Synapse3.SynapseModule.Map.Objects;
+using Synapse3.SynapseModule.Map.Schematic;
 using UnityEngine;
-using Ev = Synapse.Api.Events.EventHandler;
 
-namespace Scp1162
+namespace Scp1162;
+
+[Automatic]
+public class EventHandlers : Listener
 {
-    public class EventHandlers
+    [Inject]
+    public Scp1162 Plugin { get; set; }
+    
+    [Inject]
+    public SchematicService SchematicService { get; set; }
+    
+    private Vector3 scp1162Position;
+
+    [EventHandler]
+    public void Wait(RoundWaitingEvent _)
     {
-        public EventHandlers()
-        {
-            Ev.Get.Player.PlayerDropItemEvent += Drop;
-            Ev.Get.Round.WaitingForPlayersEvent += Wait;
+        var point = Plugin.Config.Scp1162Location;
+        scp1162Position = point.GetMapPosition();
+        if (Plugin.Config.SpawnSchematic)
+            SchematicService.SpawnSchematic(Plugin.Config.SchematicID, scp1162Position, point.GetMapRotation());
+    }
 
-            if (!SchematicHandler.Get.IsIDRegistered(PluginClass.Config.SchematicID))
-                SchematicHandler.Get.SaveSchematic(new SynapseSchematic
-                {
-                    Name = "SCP-1162",
-                    ID = 1162,
-                    PrimitiveObjects = new System.Collections.Generic.List<SynapseSchematic.PrimitiveConfiguration>
-                    {
-                        new SynapseSchematic.PrimitiveConfiguration
-                        {
-                            Position = Vector3.zero,
-                            Rotation = new Vector3(90f,0f,0f),
-                            Color = new Color(0.1f,.01f,0.1f,0.95f),
-                            PrimitiveType = PrimitiveType.Cylinder,
-                            Scale = new Vector3(1.3f,0.1f,1.3f)
-                        }
-                    }
-                }, "SCP-1162");
+    [EventHandler]
+    public void Drop(DropItemEvent ev)
+    {
+        if (Vector3.Distance(ev.Player.Position, scp1162Position) > Plugin.Config.Size) return;
+        if (Plugin.Config.PossibleItems == null || Plugin.Config.PossibleItems.Count == 0) return;
+        ev.Allow = false;
+        ev.ItemToDrop.Destroy();
+        var trans = Plugin.Translation.Get(ev.Player);
+        ev.Player.SendHint(trans.Message, trans.Duration);
+
+        var serializedItem = Plugin.Config.PossibleItems[Random.Range(0, Plugin.Config.PossibleItems.Count)];
+        if (serializedItem.ID == uint.MaxValue)
+        {
+            new SynapseRagDoll(RoleTypeId.Scp0492, ev.Player.Position, Quaternion.identity, Vector3.one, ev.Player,
+                DamageType.Unknown, ev.Player.NickName);
+            return;
         }
 
-        private void Wait()
-        {
-            var point = PluginClass.Config.Scp1162Location.Parse();
-            scp1162Position = point.Position;
-            var scp1162 = SchematicHandler.Get.SpawnSchematic(PluginClass.Config.SchematicID, scp1162Position);
-            scp1162.Rotation = point.Room.GameObject.transform.rotation;
-        }
-
-        private Vector3 scp1162Position;
-
-        private void Drop(Synapse.Api.Events.SynapseEventArguments.PlayerDropItemEventArgs ev)
-        {
-            if(Vector3.Distance(ev.Player.Position,scp1162Position) <= PluginClass.Config.Size)
-            {
-                if (PluginClass.Config.PossibleItems == null || PluginClass.Config.PossibleItems.Count == 0) return;
-                ev.Allow = false;
-                ev.Item.Destroy();
-                ev.Player.GiveTextHint(PluginClass.Config.Message);
-
-                var serializeditem = PluginClass.Config.PossibleItems.ElementAt(UnityEngine.Random.Range(0, PluginClass.Config.PossibleItems.Count));
-                if(serializeditem.ID == -1)
-                {
-                    new Synapse.Api.Ragdoll(RoleType.Scp0492, "SCP-1162", ev.Player.Position, ev.Player.transform.rotation, DamageType.Unknown);
-                    return;
-                }
-
-                var item = serializeditem.Parse();
-                if (PluginClass.Config.Drop)
-                    item.Drop(ev.Player.Position);
-                else
-                    item.PickUp(ev.Player);
-            }
-        }
+        var item = serializedItem.Parse();
+        if (Plugin.Config.Drop)
+            item.Drop(ev.Player.Position);
+        else
+            item.EquipItem(ev.Player);
     }
 }
