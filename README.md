@@ -1,9 +1,6 @@
 # Scp1162
-If you drop an Item near Scp1162 you will get another item.
-
-By default Scp1162 spawns inside Scp173 containment chamber.
+SCP-1162 is a hole that gives the player a random item upon dropping a Item near it.
+By Default it spawns in the Room of SCP-173
 
 ## Installation
-1. [Install Synapse](https://github.com/SynapseSL/Synapse/wiki#hosting-guides)
-2. Place the Scp1162.dll file that you can download [here](https://github.com/SynapseSL/Scp1162/releases) in your plugin directory
-3. Restart/Start your server.
+Simply unzip the latest zip from Releases in your Server directory
